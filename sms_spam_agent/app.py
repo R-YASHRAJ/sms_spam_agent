@@ -129,9 +129,15 @@ def load_artifacts():
         model.eval()
         model_type = "pytorch"
     elif os.path.exists(MODEL_PATH_KERAS):
-        from tensorflow.keras.models import load_model
-        model = load_model(MODEL_PATH_KERAS)
-        model_type = "keras"
+        try:
+            from tensorflow.keras.models import load_model
+            model = load_model(MODEL_PATH_KERAS)
+            model_type = "keras"
+        except ImportError:
+            raise ImportError(
+                "A .keras model artifact was found, but TensorFlow is not installed. "
+                "Please run `python train_model.py` to train the PyTorch model artifact."
+            )
     else:
         raise FileNotFoundError("No trained model found.")
 
